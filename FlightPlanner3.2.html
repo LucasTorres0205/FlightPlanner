@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Registro de Vuelo</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: #f0f8ff;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease;
+    }
+    h1 {
+      text-align: center;
+      color: #003366;
+      font-size: 36px;
+      animation: fadeIn 2s ease-out;
+    }
+    .inicio {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #0099cc;
+      text-align: center;
+      opacity: 0;
+      animation: fadeIn 2s ease-out forwards;
+    }
+    .botones {
+      display: flex;
+      gap: 20px;
+      animation: fadeIn 1s ease-out 1s forwards;
+    }
+    .boton {
+      background-color: #ff9900;
+      color: white;
+      padding: 15px 30px;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 18px;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s ease-in-out;
+    }
+    .boton:hover {
+      transform: scale(1.1);
+    }
+    .formulario {
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 0 auto;
+      display: none;
+      opacity: 0;
+      animation: slideIn 1s ease-out forwards;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #003366;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    }
+    button:hover {
+      background-color: #ff9900;
+    }
+    .registro {
+      max-width: 500px;
+      margin: 20px auto;
+      background: #e6f2ff;
+      padding: 15px;
+      border-radius: 10px;
+      opacity: 0;
+      animation: fadeIn 2s ease-out 1s forwards;
+    }
+    .registro p {
+      margin: 5px 0;
+      color: #003366;
+    }
+
+    /* Animaciones */
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    @keyframes slideIn {
+      0% { transform: translateY(-50px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Pantalla de Inicio -->
+  <div id="inicio" class="inicio">
+    <h1>Bienvenido a la Plataforma de Registros de Vuelo</h1>
+    <div class="botones">
+      <a href="#" class="boton" onclick="mostrarFormulario()">Nuevo Vuelo</a>
+      <a href="#" class="boton" onclick="mostrarVuelosGuardados()">Vuelos Guardados</a>
+    </div>
+  </div>
+
+  <!-- Formulario de Nuevo Vuelo -->
+  <div id="nuevoVuelo" class="formulario">
+    <h2>Nuevo Vuelo</h2>
+    <form id="vueloForm">
+      <label for="origen">Origen:</label>
+      <input type="text" id="origen" required>
+
+      <label for="destino">Destino:</label>
+      <input type="text" id="destino" required>
+
+      <label for="avion">Tipo de avión:</label>
+      <input type="text" id="avion">
+
+      <label for="codigo">Código de vuelo/avión:</label>
+      <input type="text" id="codigo">
+
+      <label for="clima">Dirección del clima:</label>
+      <input type="text" id="clima">
+
+      <label for="viento">Velocidad del viento (km/h):</label>
+      <input type="number" id="viento">
+
+      <button type="submit">Guardar Vuelo</button>
+    </form>
+    <button onclick="volverInicio()">Volver a Inicio</button>
+  </div>
+
+  <!-- Vuelos Guardados -->
+  <div id="vuelosGuardados" class="registro">
+    <h2>Vuelos Guardados</h2>
+    <div id="listaVuelos"></div>
+    <button onclick="volverInicio()">Volver a Inicio</button>
+  </div>
+
+  <script>
+    let vuelos = [];
+
+    function mostrarFormulario() {
+      document.getElementById('inicio').style.display = 'none';
+      document.getElementById('nuevoVuelo').style.display = 'block';
+    }
+
+    function mostrarVuelosGuardados() {
+      document.getElementById('inicio').style.display = 'none';
+      document.getElementById('vuelosGuardados').style.display = 'block';
+
+      const listaVuelos = document.getElementById('listaVuelos');
+      listaVuelos.innerHTML = '';
+      
+      if (vuelos.length === 0) {
+        listaVuelos.innerHTML = '<p>No hay vuelos guardados aún.</p>';
+      } else {
+        vuelos.forEach((vuelo, index) => {
+          listaVuelos.innerHTML += `
+            <p><strong>Vuelo ${index + 1}:</strong></p>
+            <p><strong>Origen:</strong> ${vuelo.origen}</p>
+            <p><strong>Destino:</strong> ${vuelo.destino}</p>
+            <p><strong>Avión:</strong> ${vuelo.avion}</p>
+            <p><strong>Código:</strong> ${vuelo.codigo}</p>
+            <p><strong>Dirección del clima:</strong> ${vuelo.clima}</p>
+            <p><strong>Velocidad del viento:</strong> ${vuelo.viento} km/h</p>
+            <hr>
+          `;
+        });
+      }
+    }
+
+    function volverInicio() {
+      document.getElementById('inicio').style.display = 'flex';
+      document.getElementById('nuevoVuelo').style.display = 'none';
+      document.getElementById('vuelosGuardados').style.display = 'none';
+    }
+
+    const form = document.getElementById('vueloForm');
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const vuelo = {
+        origen: document.getElementById('origen').value,
+        destino: document.getElementById('destino').value,
+        avion: document.getElementById('avion').value,
+        codigo: document.getElementById('codigo').value,
+        clima: document.getElementById('clima').value,
+        viento: document.getElementById('viento').value
+      };
+
+      vuelos.push(vuelo);
+      alert('Vuelo guardado con éxito!');
+      form.reset();
+      volverInicio();
+    });
+  </script>
+</body>
+</html>
